@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Book</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-edit {
+            background: #28a745;
+            color: white;
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .btn-edit:hover {
+            background: #218838;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            padding-left: 40px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .contacts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .contact-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .contact-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .contact-info {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            word-wrap: break-word;
+        }
+
+        .contact-info strong {
+            color: #333;
+        }
+
+        .contact-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        #editingBadge {
+            display: inline-block;
+            background: #ffc107;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contacts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📇 Contact Book</h1>
+
+        <div class="main-grid">
+            <!-- Form Section -->
+            <div class="card">
+                <h2>
+                    <span id="formTitle">Add Contact</span>
+                    <span id="editingBadge" style="display: none;">Editing</span>
+                </h2>
+                <form id="contactForm">
+                    <input type="hidden" id="contactId">
+
+                    <div class="form-group">
+                        <label for="name">Name *</label>
+                        <input type="text" id="name" required placeholder="John Doe">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="john@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone" placeholder="555-123-4567">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" placeholder="Additional notes..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        Add Contact
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn" style="display: none; width: 100%; margin: 10px 0 0 0;">
+                        Cancel
+                    </button>
+                </form>
+            </div>
+
+            <!-- Contacts List Section -->
+            <div>
+                <div class="card">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="Search contacts...">
+                    </div>
+                </div>
+
+                <div class="contacts-grid" id="contactsList">
+                    <!-- Contacts will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API base URL
+        const API_URL = 'http://localhost:8000';
+
+        // State
+        let editingContactId = null;
+
+        // DOM Elements
+        const contactForm = document.getElementById('contactForm');
+        const searchInput = document.getElementById('searchInput');
+        const contactsList = document.getElementById('contactsList');
+        const submitBtn = document.getElementById('submitBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const formTitle = document.getElementById('formTitle');
+        const editingBadge = document.getElementById('editingBadge');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadContacts();
+            setupEventListeners();
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            contactForm.addEventListener('submit', handleSubmit);
+            searchInput.addEventListener('input', handleSearch);
+            cancelBtn.addEventListener('click', resetForm);
+        }
+
+        // Load and display contacts
+        async function loadContacts(query = '') {
+            try {
+                const url = query
+                    ? `${API_URL}/contacts?q=${encodeURIComponent(query)}`
+                    : `${API_URL}/contacts`;
+
+                const response = await fetch(url);
+                const contacts = await response.json();
+
+                displayContacts(contacts);
+            } catch (error) {
+                console.error('Error loading contacts:', error);
+                contactsList.innerHTML = '<p class="empty-state">Error loading contacts. Is the server running?</p>';
+            }
+        }
+
+        // Display contacts in the grid
+        function displayContacts(contacts) {
+            if (contacts.length === 0) {
+                contactsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No contacts found. Add your first contact!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            contactsList.innerHTML = contacts.map(contact => `
+                <div class="contact-card">
+                    <div class="contact-name">${escapeHtml(contact.name)}</div>
+                    ${contact.email ? `<div class="contact-info"><strong>Email:</strong> ${escapeHtml(contact.email)}</div>` : ''}
+                    ${contact.phone ? `<div class="contact-info"><strong>Phone:</strong> ${escapeHtml(contact.phone)}</div>` : ''}
+                    ${contact.notes ? `<div class="contact-info"><strong>Notes:</strong> ${escapeHtml(contact.notes)}</div>` : ''}
+                    <div class="contact-actions">
+                        <button class="btn btn-edit" onclick="editContact('${contact.id}')">Edit</button>
+                        <button class="btn btn-delete" onclick="deleteContact('${contact.id}', '${escapeHtml(contact.name)}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Handle form submission (create or update)
+        async function handleSubmit(e) {
+            e.preventDefault();
+
+            const contactData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim() || null,
+                phone: document.getElementById('phone').value.trim() || null,
+                notes: document.getElementById('notes').value.trim() || null
+            };
+
+            try {
+                if (editingContactId) {
+                    // Update existing contact
+                    await fetch(`${API_URL}/contacts/${editingContactId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(contactData)
+                    });
+                } else {
+                    // Create new contact
+                    await fetch(`${API_URL}/contacts`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(contactData)
+                    });
+                }
+
+                resetForm();
+                loadContacts(searchInput.value);
+            } catch (error) {
+                console.error('Error saving contact:', error);
+                alert('Error saving contact. Please try again.');
+            }
+        }
+
+        // Edit contact
+        async function editContact(id) {
+            try {
+                const response = await fetch(`${API_URL}/contacts/${id}`);
+                const contact = await response.json();
+
+                // Populate form
+                document.getElementById('name').value = contact.name;
+                document.getElementById('email').value = contact.email || '';
+                document.getElementById('phone').value = contact.phone || '';
+                document.getElementById('notes').value = contact.notes || '';
+
+                // Update UI for editing mode
+                editingContactId = id;
+                formTitle.textContent = 'Edit Contact';
+                editingBadge.style.display = 'inline-block';
+                submitBtn.textContent = 'Update Contact';
+                cancelBtn.style.display = 'block';
+
+                // Scroll to form
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (error) {
+                console.error('Error loading contact:', error);
+                alert('Error loading contact. Please try again.');
+            }
+        }
+
+        // Delete contact
+        async function deleteContact(id, name) {
+            if (!confirm(`Are you sure you want to delete "${name}"?`)) {
+                return;
+            }
+
+            try {
+                await fetch(`${API_URL}/contacts/${id}`, {
+                    method: 'DELETE'
+                });
+
+                loadContacts(searchInput.value);
+            } catch (error) {
+                console.error('Error deleting contact:', error);
+                alert('Error deleting contact. Please try again.');
+            }
+        }
+
+        // Handle search
+        function handleSearch(e) {
+            loadContacts(e.target.value);
+        }
+
+        // Reset form to add mode
+        function resetForm() {
+            contactForm.reset();
+            editingContactId = null;
+            formTitle.textContent = 'Add Contact';
+            editingBadge.style.display = 'none';
+            submitBtn.textContent = 'Add Contact';
+            cancelBtn.style.display = 'none';
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
