@@ -45,6 +45,7 @@ def sample_contact():
         "name": "Alice Johnson",
         "email": "alice@example.com",
         "phone": "312-555-0101",
+        "location": "Chicago, IL",
         "notes": "Met at PyCon 2025"
     }
 
@@ -56,6 +57,7 @@ def another_contact():
         "name": "Bob Smith",
         "email": "bob@example.com",
         "phone": "773-555-0202",
+        "location": "New York, NY",
         "notes": "College friend"
     }
 

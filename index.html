@@ -262,6 +262,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" placeholder="City, State, Country">
+                    </div>
+
+                    <div class="form-group">
                         <label for="notes">Notes</label>
                         <textarea id="notes" placeholder="Additional notes..."></textarea>
                     </div>
@@ -354,6 +359,7 @@
                     <div class="contact-name">${escapeHtml(contact.name)}</div>
                     ${contact.email ? `<div class="contact-info"><strong>Email:</strong> ${escapeHtml(contact.email)}</div>` : ''}
                     ${contact.phone ? `<div class="contact-info"><strong>Phone:</strong> ${escapeHtml(contact.phone)}</div>` : ''}
+                    ${contact.location ? `<div class="contact-info"><strong>Location:</strong> ${escapeHtml(contact.location)}</div>` : ''}
                     ${contact.notes ? `<div class="contact-info"><strong>Notes:</strong> ${escapeHtml(contact.notes)}</div>` : ''}
                     <div class="contact-actions">
                         <button class="btn btn-edit" onclick="editContact('${contact.id}')">Edit</button>
@@ -371,6 +377,7 @@
                 name: document.getElementById('name').value.trim(),
                 email: document.getElementById('email').value.trim() || null,
                 phone: document.getElementById('phone').value.trim() || null,
+                location: document.getElementById('location').value.trim() || null,
                 notes: document.getElementById('notes').value.trim() || null
             };
 
@@ -409,6 +416,7 @@
                 document.getElementById('name').value = contact.name;
                 document.getElementById('email').value = contact.email || '';
                 document.getElementById('phone').value = contact.phone || '';
+                document.getElementById('location').value = contact.location || '';
                 document.getElementById('notes').value = contact.notes || '';
 
                 // Update UI for editing mode
