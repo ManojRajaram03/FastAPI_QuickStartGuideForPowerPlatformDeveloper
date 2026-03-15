@@ -114,6 +114,10 @@ class ContactCreate(BaseModel):
     phone: Optional[str] = None
     # Same as email - optional phone field
 
+    location: Optional[str] = None
+    # Optional location field (city, state, country, etc.)
+    # POWER PLATFORM ANALOGY: Like an optional address/location field in a contact form
+
     notes: Optional[str] = None
     # Optional notes field for additional information
 
@@ -183,6 +187,9 @@ class ContactResponse(BaseModel):
     phone: Optional[str] = None
     # Optional phone field
 
+    location: Optional[str] = None
+    # Optional location field
+
     notes: Optional[str] = None
     # Optional notes field
 
@@ -218,6 +225,9 @@ class ContactUpdate(BaseModel):
 
     phone: Optional[str] = None
     # User can update phone or leave it unchanged
+
+    location: Optional[str] = None
+    # User can update location or leave it unchanged
 
     notes: Optional[str] = None
     # User can update notes or leave it unchanged
@@ -387,12 +397,13 @@ def list_contacts(q: Optional[str] = None):
         # "for contact in contacts_db" = loop through each contact
         # POWER PLATFORM ANALOGY: Like "Apply to each" in Power Automate
 
-        # Check if query matches ANY field (name, email, phone, OR notes)
+        # Check if query matches ANY field (name, email, phone, location, OR notes)
         # This is a complex IF condition with OR logic
 
         if (query_lower in (contact.get("name") or "").lower() or
             query_lower in (contact.get("email") or "").lower() or
             query_lower in (contact.get("phone") or "").lower() or
+            query_lower in (contact.get("location") or "").lower() or
             query_lower in (contact.get("notes") or "").lower()):
 
             # Let's break down this complex condition:
